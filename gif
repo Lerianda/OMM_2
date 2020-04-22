@@ -1,0 +1,8 @@
+import imageio
+import os
+
+folder = 'framesangle'
+files = [f"{folder}\\{file}" for file in os.listdir(folder)]
+
+images = [imageio.imread(file) for file in files]
+imageio.mimwrite('Angle.gif', images, fps=1)
