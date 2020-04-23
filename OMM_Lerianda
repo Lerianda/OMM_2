@@ -35,7 +35,7 @@ def f_2(ix, iy, jt):
 def progon_x(iy, jt):  # явно выражена х, неявно у
     d = np.zeros(Nx)
     sigma = np.zeros(Nx)
-    d[1] = 0  # из ГУ, u0=d0*u1+sigma0
+    d[1] = 0  # из первого ГУ (u=0), u0=d0*u1+sigma0, Если производная =0, то d=1, sigma=0
     sigma[1] = 0
     a = 0.5 * gamma_x
     b = 1 + gamma_x
@@ -44,7 +44,7 @@ def progon_x(iy, jt):  # явно выражена х, неявно у
         fm = - f_1(m, iy, jt)
         d[m+1] = c / (b - a * d[m])
         sigma[m+1] = (fm - a * sigma[m]) / (a * d[m] - b)
-    u[Nx - 1, iy, jt] = 0  # Тут второе ГУ, функция равна нулю
+    u[Nx - 1, iy, jt] = 0  # Тут второе ГУ, u равна нулю. Если производная =0, см ниже пример
     for m in range(Nx - 1, 0, -1):
         u[m-1, iy, jt] = d[m] * u[m, iy, jt] + sigma[m]
 
@@ -52,7 +52,7 @@ def progon_x(iy, jt):  # явно выражена х, неявно у
 def progon_y(ix, jt):
     d = np.zeros(Ny)
     sigma = np.zeros(Ny)
-    d[1] = 0  # из первого ГУ
+    d[1] = 0  # из первого ГУ (u=0). Если производная =0, то d=1, sigma=0
     sigma[1] = 0
     A = 0.5 * gamma_y
     B = 1 + gamma_y
@@ -88,12 +88,12 @@ for i in range(0, M, 2):
     ax.set_ylabel("$y$", fontsize=20)
     ax.set_zlabel("$u$", fontsize=20)
     ax.set_zlim(-1.01, 1.01)
-    ax.set_title("2-ая задача\nРымарь Валерия 305гр")
-    ax.plot_surface(x, y, u[:, :, i], cmap=plt.get_cmap('RdYlGn'), vmin=-1, vmax=1)
+    ax.set_title("2-ая задача\nИмя группа")
+    ax.plot_surface(x, y, u[:, :, i])  # вместо RdYlGn любое название цветовой арты, см инет
     fig.colorbar(ax.plot_surface(x, y, u[:, :, i], cmap=plt.get_cmap('RdYlGn'), vmin=-1, vmax=1), shrink=1, aspect=8)
-    ax.view_init(30, 10+i)
+    ax.view_init(30, 10+i)  # здесь поворот картинки, если убрать i, она не будет крутиться
 
-    if i < 10:  # Для верной сортировки по имени
+    if i < 10:  # Для верной сортировки графиков по имени (в особенности при создании gif)
         filename = 'framesangle/step0' + str(i) + '.png'
     else:
         filename = 'framesangle/step' + str(i) + '.png'
