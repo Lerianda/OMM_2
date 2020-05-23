@@ -1,23 +1,24 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from collections import OrderedDict
+import numpy as np  # математические формулы
+import matplotlib.pyplot as plt  # для создания 3D графиков
+from collections import OrderedDict  # для выбора цвета
 
 cmaps = OrderedDict()
 
 Nx = 50  # количество шагов по х
 Ny = 50  # количество шагов по у
-M = 100  # количество шагов по t
+M = 500  # количество шагов по t
 Xm = 1  # максимальный x
 Ym = 2  # максимальный y
+T = 0.1
 
 x = np.linspace(0, 1, Nx)  # все переменные
 y = np.linspace(0, 2, Ny)
-t = np.linspace(0, 0.1, M)
+t = np.linspace(0, T, M)
 u = np.zeros((Nx, Ny, 2 * M + 1))
 
 h_x = Xm / Nx  # шаг цикла
 h_y = Ym / Ny
-tau = 0.1 / M
+tau = T / M
 
 gamma_x = tau / h_x ** 2   # Доп переменная из методички
 gamma_y = tau / h_y ** 2
@@ -69,7 +70,9 @@ def progon_y(ix, jt):
 
 # beginning of the program
 
-u[:, :, 0] = np.sin(2 * np.pi * x) * np.sin(np.pi * y / 4)
+for i1 in range(0, Nx, 1):
+    for i2 in range(0, Ny, 1):
+        u[i1, i2, 0] = np.sin(2*np.pi*x[i1])*np.sin(np.pi*y[i2]/4)
 
 for j in range(1, 2 * M, 2):
     for i2 in range(1, Ny - 1):
@@ -88,15 +91,18 @@ for i in range(0, M, 2):
     ax.set_ylabel("$y$", fontsize=20)
     ax.set_zlabel("$u$", fontsize=20)
     ax.set_zlim(-1.01, 1.01)
-    ax.set_title("2-ая задача\nИмя группа")
-    ax.plot_surface(x, y, u[:, :, i])  # вместо RdYlGn любое название цветовой арты, см инет
-    fig.colorbar(ax.plot_surface(x, y, u[:, :, i], cmap=plt.get_cmap('RdYlGn'), vmin=-1, vmax=1), shrink=1, aspect=8)
-    ax.view_init(30, 10+i)  # здесь поворот картинки, если убрать i, она не будет крутиться
+    ti = round(i * T / M, 3)
+    ax.set_title("2-ая задача\nРымарь Валерия 305гр\nВремя "+str(ti))
+    fig.colorbar(ax.plot_surface(x, y, u[:, :, i], cmap=plt.get_cmap('RdYlGn')), shrink=1, aspect=8)
+    ax.view_init(30, 20+i/15)  # здесь поворот картинки, если убрать i, она не будет крутиться
 
-    if i < 10:  # Для верной сортировки графиков по имени (в особенности при создании gif)
-        filename = 'framesangle/step0' + str(i) + '.png'
+    if i < 10:  # Для верной сортировки по имени
+        filename = 'framesangle/step00' + str(i) + '.png'
     else:
-        filename = 'framesangle/step' + str(i) + '.png'
+        if i < 100:
+            filename = 'framesangle/step0' + str(i) + '.png'
+        else:
+            filename = 'framesangle/step' + str(i) + '.png'
     plt.savefig(filename, dpi=96)
 
     ax.clear()
